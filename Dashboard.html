@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard — UpsellX</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="scene"><div class="scene-green"></div></div>
+
+<div class="nav-wrap">
+<nav class="nav">
+<div class="nav-left" onclick="location.href='index.html'">
+<div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg></div>
+<span class="nav-title">UpsellX</span>
+</div>
+<div class="nav-right" id="navRight"></div>
+</nav>
+</div>
+
+<div class="page-wrap wide">
+
+<div class="page-header">
+<div>
+<h1>Your customer intelligence</h1>
+<p id="dashSubtitle">From your latest upload</p>
+</div>
+</div>
+
+<div class="stats">
+<div class="stat s-tot">
+<div class="s-lbl">Customers Analyzed</div>
+<div class="s-val" id="statTotal">0</div>
+<div class="s-sub">from latest upload</div>
+<div class="s-track"><div class="s-bar" style="width:100%"></div></div>
+</div>
+<div class="stat s-up">
+<div class="s-lbl">High Upsell Potential</div>
+<div class="s-val" id="statUp">0</div>
+<div class="s-sub" id="statUpSub">—</div>
+<div class="s-track"><div class="s-bar" id="barUp" style="width:0%"></div></div>
+</div>
+<div class="stat s-risk">
+<div class="s-lbl">High Churn Risk</div>
+<div class="s-val" id="statRisk">0</div>
+<div class="s-sub" id="statRiskSub">—</div>
+<div class="s-track"><div class="s-bar" id="barRisk" style="width:0%"></div></div>
+</div>
+</div>
+
+<div class="grid">
+<div class="lcol">
+<div class="card">
+<div class="card-top"><div class="clabel" style="margin-bottom:0">Customer Segments</div></div>
+<div class="tabs" id="segTabs">
+<button class="tab tab-active" data-seg="all" onclick="setFilter('all')">All · <span id="tabAll">0</span></button>
+<button class="tab" data-seg="up" onclick="setFilter('up')">High Upsell · <span id="tabUp">0</span></button>
+<button class="tab" data-seg="risk" onclick="setFilter('risk')">Retain First · <span id="tabRisk">0</span></button>
+<button class="tab" data-seg="low" onclick="setFilter('low')">Low Priority · <span id="tabLow">0</span></button>
+</div>
+<div class="custlist" id="custList"></div>
+</div>
+</div>
+
+<div class="rcol">
+<div class="card">
+<div class="clabel">Segment Breakdown</div>
+<div class="cwrap">
+<canvas id="segChart"></canvas>
+<div class="cctr"><div class="cval" id="chartCenter">0</div><div class="clbl2">total customers</div></div>
+</div>
+<div class="legend" id="legend"></div>
+</div>
+
+<div class="card">
+<div class="clabel">Recommended Next Actions</div>
+<div class="action-list" id="actionList"></div>
+</div>
+</div>
+</div>
+
+<div class="dash-foot">
+<button class="link-btn" type="button" onclick="uploadAnother()">Upload another file →</button>
+</div>
+
+</div>
+
+<script src="js/Dashboard.js"></script>
+</body>
+</html>

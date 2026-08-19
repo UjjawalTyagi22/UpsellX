@@ -1,335 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>UpsellX — Customer Intelligence</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <link rel="stylesheet" href="css/style.css"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UpsellX — Know who's ready to upgrade</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
 <div class="scene"><div class="scene-green"></div></div>
 
-<!-- NAVIGATION -->
 <div class="nav-wrap">
-  <nav class="nav">
-    <div class="nav-left" onclick="onLogoClick()">
-      <div class="nav-ico">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/>
-        </svg>
-      </div>
-      <span class="nav-title">UpsellX</span>
-    </div>
-    <div class="nav-mid" id="navMid">
-      <button class="nav-ghost" type="button" onclick="scrollToSection('how-it-works')">How it Works</button> 
-    </div>
-    <div class="nav-right" id="navRight"></div>
-  </nav>
+<nav class="nav">
+<div class="nav-left" onclick="location.href='index.html'">
+<div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg></div>
+<span class="nav-title">UpsellX</span>
+</div>
+<div class="nav-right" id="navRight"></div>
+</nav>
 </div>
 
-<!-- ================= 1. LANDING SCREEN ================= -->
-<section class="screen active" id="screen-landing">
-  <div class="hero">
-    <div class="hero-pill">
-      <span class="pill-dot">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
-        </svg>
-      </span>
-      AI-powered customer intelligence for telecom
-    </div>
-    <h1>Know who's ready<br>to upgrade —<br>before they ask.</h1>
-    <p>UpsellX scores every customer from your call-log and care data, so your team knows exactly who to upsell, who to retain, and who to leave alone.</p>
-    <div class="hero-ctas">
-      <button class="btn-primary" type="button" onclick="goTo('login')">Get Started Free</button>
-      <button class="btn-secondary" type="button" onclick="viewDemoDashboard()">See a Live Dashboard</button>
-    </div>
-  </div>
+<div class="hero">
+<div class="hero-pill">
+<span class="pill-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
+AI-powered customer intelligence for telecom
+</div>
+<h1>Know who's ready<br>to upgrade —<br>before they ask.</h1>
+<p>UpsellX scores every customer from your call-log and care data, so your team knows exactly who to upsell, who to retain, and who to leave alone.</p>
+<div class="hero-ctas">
+<button class="btn-primary" type="button" onclick="location.href='login.html'">Get Started Free</button>
+<button class="btn-secondary" type="button" onclick="location.href='Dashboard.html?demo=1'">See a Live Dashboard</button>
+</div>
+</div>
 
-  <div class="page-wrap wide" style="padding-top:0">
-    <div class="stats-land" id="product">
-      <div class="stat-feat s-a">
-        <div class="s-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#5b43d6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2v20M2 12h20"/>
-          </svg>
-        </div>
-        <div class="s-lbl">Upsell Score</div>
-        <div class="s-ttl">Predict who's ready</div>
-        <div class="s-desc">An XGBoost model reads call patterns and service history to score every customer's upsell probability, 0–100%.</div>
-      </div>
-      <div class="stat-feat s-b">
-        <div class="s-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#1f6644" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 8V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2"/><path d="M3 8v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8"/><path d="M3 8h18"/>
-          </svg>
-        </div>
-        <div class="s-lbl">Churn Risk</div>
-        <div class="s-ttl">Catch it early</div>
-        <div class="s-desc">A second model flags high churn risk in parallel, so you retain first and upsell second where it matters.</div>
-      </div>
-      <div class="stat-feat s-c">
-        <div class="s-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#1c3f70" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
-          </svg>
-        </div>
-        <div class="s-lbl">Smart Segments</div>
-        <div class="s-ttl">Act with focus</div>
-        <div class="s-desc">A decision engine combines both scores into three clear segments your team can action the same day.</div>
-      </div>
-    </div>
+<div class="page-wrap wide" style="padding-top:0">
+<div class="stats-land">
+<div class="stat-feat s-a">
+<div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#5b43d6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg></div>
+<div class="s-lbl">Upsell Score</div>
+<div class="s-ttl">Predict who's ready</div>
+<div class="s-desc">An XGBoost model reads call patterns and service history to score every customer's upsell probability, 0–100%.</div>
+</div>
+<div class="stat-feat s-b">
+<div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#1f6644" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2"/><path d="M3 8v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8"/><path d="M3 8h18"/></svg></div>
+<div class="s-lbl">Churn Risk</div>
+<div class="s-ttl">Catch it early</div>
+<div class="s-desc">A second model flags high churn risk in parallel, so you retain first and upsell second where it matters.</div>
+</div>
+<div class="stat-feat s-c">
+<div class="s-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#1c3f70" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></div>
+<div class="s-lbl">Smart Segments</div>
+<div class="s-ttl">Act with focus</div>
+<div class="s-desc">A decision engine combines both scores into three clear segments your team can action the same day.</div>
+</div>
+</div>
 
-    <div class="section-head" id="how-it-works">
-      <div class="section-eyebrow">How it works</div>
-      <h2>From raw call logs to a ranked action list</h2>
-      <p>Four steps, no data science required on your end.</p>
-    </div>
+<div class="section-head" id="howItWorks">
+<div class="section-eyebrow">How it works</div>
+<h2>From raw call logs to a ranked action list</h2>
+<p>Four steps, no data science required on your end.</p>
+</div>
+<div class="steps4">
+<div class="step-card"><div class="step-num">01</div><h3>Upload data</h3><p>Drop in your customer care or call-log CSV/Excel export.</p></div>
+<div class="step-card"><div class="step-num">02</div><h3>We process it</h3><p>Cleaning, feature engineering, and two XGBoost models run automatically.</p></div>
+<div class="step-card"><div class="step-num">03</div><h3>Get segments</h3><p>Every customer lands in High Upsell, Retain First, or Low Priority.</p></div>
+<div class="step-card"><div class="step-num">04</div><h3>Take action</h3><p>Export the list or work it straight from the dashboard.</p></div>
+</div>
 
-    <div class="steps4">
-      <div class="step-card"><div class="step-num">01</div><h3>Upload data</h3><p>Drop in your customer care or call-log CSV/Excel export.</p></div>
-      <div class="step-card"><div class="step-num">02</div><h3>We process it</h3><p>Cleaning, feature engineering, and two XGBoost models run automatically.</p></div>
-      <div class="step-card"><div class="step-num">03</div><h3>Get segments</h3><p>Every customer lands in High Upsell, Retain First, or Low Priority.</p></div>
-      <div class="step-card"><div class="step-num">04</div><h3>Take action</h3><p>Export the list or work it straight from the dashboard.</p></div>
-    </div>
+<div class="cta-band">
+<h2>Ready to find your next upsell?</h2>
+<p>Upload a dataset and see your first segments in minutes.</p>
+<button class="nav-btn" type="button" onclick="location.href='login.html'">Get Started Free</button>
+</div>
+</div>
 
-    <div class="cta-band">
-      <h2>Ready to find your next upsell?</h2>
-      <p>Upload a dataset and see your first segments in minutes.</p>
-      <button class="nav-btn" type="button" onclick="goTo('login')">Get Started Free</button>
-    </div>
-  </div>
+<footer>
+<span>© 2026 UpsellX</span>
+<div class="f-links">
+<button type="button" onclick="openModal('privacy')">Privacy</button>
+<button type="button" onclick="openModal('terms')">Terms</button>
+<button type="button" onclick="openModal('contact')">Contact</button>
+</div>
+</footer>
 
-  <footer>
-    <span>© 2026 UpsellX</span>
-    <div class="f-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a></div>
-  </footer>
-</section>
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+<div class="modal-box" id="modalBox">
+<div class="modal-head">
+<h2 id="modalTitle">Title</h2>
+<button class="modal-close" type="button" onclick="closeModal()" aria-label="Close">
+<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+</button>
+</div>
+<div class="modal-body" id="modalBody"></div>
+</div>
+</div>
 
-<!-- ================= 2. LOGIN SCREEN ================= -->
-<section class="screen" id="screen-login">
-  <div class="center-wrap">
-    <div class="auth-card">
-      <div class="auth-pill">Welcome back</div>
-      <h1>Log in to UpsellX</h1>
-      <p>Access your customer intelligence dashboard.</p>
-
-      <div class="fg">
-        <label class="fl">Email</label>
-        <input type="email" id="loginEmail" placeholder="you@company.com"/>
-      </div>
-      <div class="fg">
-        <label class="fl">Password</label>
-        <input type="password" id="loginPassword" placeholder="••••••••"/>
-      </div>
-      <div class="field-error" id="loginError"></div>
-
-      <div class="row-between">
-        <label class="remember"><input type="checkbox"/> Remember me</label>
-        <button type="button" class="link" onclick="alert('Password reset isn\'t wired up in this demo yet.')">Forgot password?</button>
-      </div>
-
-      <button class="btn-block" type="button" onclick="handleLogin()">Log In</button>
-
-      <div class="divider">or</div>
-
-      <button class="btn-outline" type="button" onclick="handleGoogleLogin()">
-        <svg width="16" height="16" viewBox="0 0 24 24">
-          <path fill="#4285F4" d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.63h6.47a5.53 5.53 0 0 1-2.4 3.63v3h3.87c2.27-2.09 3.58-5.17 3.58-8.81z"/>
-          <path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.94-2.92l-3.87-3c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.28v3.11A12 12 0 0 0 12 24z"/>
-          <path fill="#FBBC05" d="M5.27 14.27a7.2 7.2 0 0 1 0-4.54v-3.1H1.28a12 12 0 0 0 0 10.75l3.99-3.11z"/>
-          <path fill="#EA4335" d="M12 4.77c1.76 0 3.35.61 4.6 1.8l3.44-3.44C17.95 1.19 15.24 0 12 0A12 12 0 0 0 1.28 6.63l3.99 3.1C6.22 6.88 8.87 4.77 12 4.77z"/>
-        </svg>
-        Continue with Google
-      </button>
-
-      <div class="foot-note">Don't have an account? <button type="button" class="link" onclick="handleGoogleLogin()">Sign up</button></div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= 3. UPLOAD SCREEN ================= -->
-<section class="screen" id="screen-upload">
-  <div class="page-wrap medium">
-    <div class="stepper">
-      <div class="step done"><div class="step-circle">✓</div><div class="step-label">Account</div></div>
-      <div class="step-line done"></div>
-      <div class="step active"><div class="step-circle">2</div><div class="step-label">Upload</div></div>
-      <div class="step-line"></div>
-      <div class="step"><div class="step-circle">3</div><div class="step-label">Processing</div></div>
-      <div class="step-line"></div>
-      <div class="step"><div class="step-circle">4</div><div class="step-label">Results</div></div>
-    </div>
-
-    <div class="page-head">
-      <h1>Upload customer data</h1>
-      <p>Upload your CDR / call log dataset to identify upsell candidates.</p>
-    </div>
-
-    <div class="card">
-      <div class="dropzone" id="dropzone" onclick="fileInput.click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
-        <div class="dz-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#5b43d6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/>
-          </svg>
-        </div>
-        <h3>Drag & drop your file here</h3>
-        <p>or click to browse from your computer</p>
-        <button class="btn-browse" type="button" onclick="event.stopPropagation(); fileInput.click();">Browse Files</button>
-        <div class="dz-formats">Supports .csv, .xlsx — up to 25MB</div>
-      </div>
-      <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display:none" onchange="onFileInputChange(event)"/>
-      <div class="field-error" id="uploadError"></div>
-
-      <div class="file-preview" id="filePreview">
-        <div class="file-ico">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#1f6644" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>
-          </svg>
-        </div>
-        <div class="file-meta">
-          <div class="file-name" id="fpName">—</div>
-          <div class="file-size" id="fpSize">—</div>
-        </div>
-        <button class="file-remove" type="button" onclick="removeFile()" title="Remove file">✕</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="clabel">File requirements</div>
-      <div class="req-list">
-        <div class="req-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Includes a <b>customer_id</b> column to uniquely identify each customer</div>
-        <div class="req-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Call log fields — <b>call duration, frequency, plan type</b></div>
-        <div class="req-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Customer care fields — <b>complaints, support tickets</b></div>
-        <div class="req-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> One row per customer, first row as headers</div>
-      </div>
-    </div>
-
-    <div class="actions-row">
-      <button class="btn-secondary2" type="button" onclick="removeFile()">Cancel</button>
-      <button class="btn-continue" id="continueBtn" type="button" disabled onclick="continueToProcessing()">
-        Continue to Processing
-        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </button>
-    </div>
-  </div>
-</section>
-
-<!-- ================= 4. PROCESSING SCREEN ================= -->
-<section class="screen" id="screen-processing">
-  <div class="page-wrap narrow">
-    <div class="stepper">
-      <div class="step done"><div class="step-circle">✓</div><div class="step-label">Account</div></div>
-      <div class="step-line done"></div>
-      <div class="step done"><div class="step-circle">✓</div><div class="step-label">Upload</div></div>
-      <div class="step-line done"></div>
-      <div class="step active"><div class="step-circle">3</div><div class="step-label">Processing</div></div>
-      <div class="step-line"></div>
-      <div class="step"><div class="step-circle">4</div><div class="step-label">Results</div></div>
-    </div>
-
-    <div class="card proc-card">
-      <h1>Analyzing your data…</h1>
-      <p>Sit tight while we clean, score, and segment your customers.</p>
-
-      <div class="ring-wrap">
-        <svg width="180" height="180" viewBox="0 0 180 180">
-          <circle cx="90" cy="90" r="78" fill="none" stroke="#e2dfd8" stroke-width="12"/>
-          <circle id="ringProgress" cx="90" cy="90" r="78" fill="none" stroke="#5b43d6" stroke-width="12" stroke-linecap="round" stroke-dasharray="490.09" stroke-dashoffset="490.09"/>
-        </svg>
-        <div class="ring-ctr">
-          <div class="ring-val" id="ringVal">0%</div>
-          <div class="ring-lbl">complete</div>
-        </div>
-      </div>
-
-      <div class="clabel-left">Pipeline status</div>
-      <div class="tasklist">
-        <div class="taskrow current" id="taskrow1"><div class="tbar"></div><div class="ticon spin"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg></div><div class="tname">Data cleaning & validation</div><div class="tstatus">Running</div></div>
-        <div class="taskrow" id="taskrow2"><div class="tbar"></div><div class="ticon"></div><div class="tname">Feature engineering</div><div class="tstatus">Pending</div></div>
-        <div class="taskrow" id="taskrow3"><div class="tbar"></div><div class="ticon"></div><div class="tname">Upsell model (XGBoost)</div><div class="tstatus">Pending</div></div>
-        <div class="taskrow" id="taskrow4"><div class="tbar"></div><div class="ticon"></div><div class="tname">Churn model (XGBoost)</div><div class="tstatus">Pending</div></div>
-        <div class="taskrow" id="taskrow5"><div class="tbar"></div><div class="ticon"></div><div class="tname">Decision engine</div><div class="tstatus">Pending</div></div>
-        <div class="taskrow" id="taskrow6"><div class="tbar"></div><div class="ticon"></div><div class="tname">Preparing dashboard</div><div class="tstatus">Pending</div></div>
-      </div>
-
-      <div class="note">You'll be redirected automatically once processing finishes.</div>
-      <button class="skip-link" type="button" onclick="skipProcessing()">Skip ahead (demo)</button>
-    </div>
-  </div>
-</section>
-
-<!-- ================= 5. DASHBOARD SCREEN ================= -->
-<section class="screen" id="screen-dashboard">
-  <div class="page-wrap wide">
-    <div class="page-header">
-      <div>
-        <h1>Your customer intelligence</h1>
-        <p id="dashSubtitle">From your latest upload</p>
-      </div>
-    </div>
-
-    <div class="stats">
-      <div class="stat s-tot">
-        <div class="s-lbl">Customers Analyzed</div>
-        <div class="s-val" id="statTotal">0</div>
-        <div class="s-sub">from latest upload</div>
-        <div class="s-track"><div class="s-bar" style="width:100%"></div></div>
-      </div>
-      <div class="stat s-up">
-        <div class="s-lbl">High Upsell Potential</div>
-        <div class="s-val" id="statUp">0</div>
-        <div class="s-sub" id="statUpSub">—</div>
-        <div class="s-track"><div class="s-bar" id="barUp" style="width:0%"></div></div>
-      </div>
-      <div class="stat s-risk">
-        <div class="s-lbl">High Churn Risk</div>
-        <div class="s-val" id="statRisk">0</div>
-        <div class="s-sub" id="statRiskSub">—</div>
-        <div class="s-track"><div class="s-bar" id="barRisk" style="width:0%"></div></div>
-      </div>
-    </div>
-
-    <div class="grid">
-      <div class="lcol">
-        <div class="card">
-          <div class="card-top"><div class="clabel" style="margin-bottom:0">Customer Segments</div></div>
-          <div class="tabs" id="segTabs">
-            <button class="tab tab-active" data-seg="all" onclick="setFilter('all')">All · <span id="tabAll">0</span></button>
-            <button class="tab" data-seg="up" onclick="setFilter('up')">High Upsell · <span id="tabUp">0</span></button>
-            <button class="tab" data-seg="risk" onclick="setFilter('risk')">Retain First · <span id="tabRisk">0</span></button>
-            <button class="tab" data-seg="low" onclick="setFilter('low')">Low Priority · <span id="tabLow">0</span></button>
-          </div>
-          <div class="custlist" id="custList"></div>
-        </div>
-      </div>
-
-      <div class="rcol">
-        <div class="card">
-          <div class="clabel">Segment Breakdown</div>
-          <div class="cwrap">
-            <canvas id="segChart"></canvas>
-            <div class="cctr"><div class="cval" id="chartCenter">0</div><div class="clbl2">total customers</div></div>
-          </div>
-          <div class="legend" id="legend"></div>
-        </div>
-
-        <div class="card">
-          <div class="clabel">Recommended Next Actions</div>
-          <div class="action-list" id="actionList"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="dash-foot">
-      <button class="link-btn" type="button" onclick="uploadAnother()">Upload another file →</button>
-    </div>
-  </div>
-</section>
-
-<script src="js/app.js"></script>
+<script src="js/index.js"></script>
 </body>
 </html>

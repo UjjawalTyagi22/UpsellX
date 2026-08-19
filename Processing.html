@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Processing — UpsellX</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+<div class="scene"><div class="scene-green"></div></div>
+
+<div class="nav-wrap">
+<nav class="nav">
+<div class="nav-left" onclick="location.href='index.html'">
+<div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg></div>
+<span class="nav-title">UpsellX</span>
+</div>
+<div class="nav-right" id="navRight"></div>
+</nav>
+</div>
+
+<div class="page-wrap narrow">
+<div class="stepper">
+<div class="step done"><div class="step-circle">✓</div><div class="step-label">Account</div></div>
+<div class="step-line done"></div>
+<div class="step done"><div class="step-circle">✓</div><div class="step-label">Upload</div></div>
+<div class="step-line done"></div>
+<div class="step active"><div class="step-circle">3</div><div class="step-label">Processing</div></div>
+<div class="step-line"></div>
+<div class="step"><div class="step-circle">4</div><div class="step-label">Results</div></div>
+</div>
+
+<div class="card proc-card">
+<h1>Analyzing your data…</h1>
+<p id="procSub">Sit tight while we clean, score, and segment your customers.</p>
+
+<div class="ring-wrap">
+<svg width="180" height="180" viewBox="0 0 180 180">
+<circle cx="90" cy="90" r="78" fill="none" stroke="#e2dfd8" stroke-width="12"/>
+<circle id="ringProgress" cx="90" cy="90" r="78" fill="none" stroke="#5b43d6" stroke-width="12" stroke-linecap="round"
+stroke-dasharray="490.09" stroke-dashoffset="490.09"/>
+</svg>
+<div class="ring-ctr">
+<div class="ring-val" id="ringVal">0%</div>
+<div class="ring-lbl">complete</div>
+</div>
+</div>
+
+<div class="clabel-left">Pipeline status</div>
+<div class="tasklist">
+<div class="taskrow current" id="taskrow1"><div class="tbar"></div><div class="ticon spin"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg></div><div class="tname">Data cleaning & validation</div><div class="tstatus">Running</div></div>
+<div class="taskrow" id="taskrow2"><div class="tbar"></div><div class="ticon"></div><div class="tname">Feature engineering</div><div class="tstatus">Pending</div></div>
+<div class="taskrow" id="taskrow3"><div class="tbar"></div><div class="ticon"></div><div class="tname">Upsell model (XGBoost)</div><div class="tstatus">Pending</div></div>
+<div class="taskrow" id="taskrow4"><div class="tbar"></div><div class="ticon"></div><div class="tname">Churn model (XGBoost)</div><div class="tstatus">Pending</div></div>
+<div class="taskrow" id="taskrow5"><div class="tbar"></div><div class="ticon"></div><div class="tname">Decision engine</div><div class="tstatus">Pending</div></div>
+<div class="taskrow" id="taskrow6"><div class="tbar"></div><div class="ticon"></div><div class="tname">Preparing dashboard</div><div class="tstatus">Pending</div></div>
+</div>
+
+<div class="note">You'll be redirected automatically once processing finishes.</div>
+<button class="skip-link" type="button" onclick="skipProcessing()">Skip ahead (demo)</button>
+</div>
+</div>
+
+<script src="js/Processing.js"></script>
+</body>
+</html>
