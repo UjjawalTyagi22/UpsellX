@@ -8,50 +8,79 @@
 <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
-<div class="scene"><div class="scene-green"></div></div>
 
-<div class="nav-wrap">
-<nav class="nav">
-<div class="nav-left" onclick="location.href='index.html'">
+<div class="split-auth">
+
+<div class="split-left">
+<a class="split-logo" href="index.html">
 <div class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg></div>
-<span class="nav-title">UpsellX</span>
-</div>
-<div class="nav-right" id="navRight"></div>
-</nav>
+<span>UpsellX</span>
+</a>
+
+<div class="illus-wrap">
+<div class="illus-blob b1"></div>
+<div class="illus-blob b2"></div>
+
+<div class="illus-float f1">
+<div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#1f6644" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg></div>
+<div><div class="lbl">Upsell Score</div><div class="val">92%</div></div>
 </div>
 
-<div class="center-wrap">
-<div class="auth-card">
-<div class="auth-pill">Welcome back</div>
-<h1>Log in to UpsellX</h1>
-<p>Access your customer intelligence dashboard.</p>
+<div class="illus-float f2">
+<div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#5b43d6" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+<div><div class="lbl">Segments</div><div class="val">Ready</div></div>
+</div>
 
-<div class="fg">
-<label class="fl">Email</label>
+<div class="illus-phone">
+<div class="illus-notch"></div>
+<div class="illus-chart-row">
+<div class="illus-chart-bar" style="height:35%"></div>
+<div class="illus-chart-bar" style="height:55%"></div>
+<div class="illus-chart-bar" style="height:40%"></div>
+<div class="illus-chart-bar" style="height:75%"></div>
+<div class="illus-chart-bar" style="height:60%"></div>
+<div class="illus-chart-bar" style="height:90%"></div>
+</div>
+<div class="illus-mini-card">
+<div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#5b43d6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></div>
+<div class="txt"><div class="l1"></div><div class="l2"></div></div>
+</div>
+<div class="illus-mini-card green">
+<div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#1f6644" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+<div class="txt"><div class="l1"></div><div class="l2"></div></div>
+</div>
+<div class="illus-mini-card">
+<div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#5b43d6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+<div class="txt"><div class="l1"></div><div class="l2"></div></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="split-right">
+<div class="split-right-inner">
+<h1>Welcome Back!</h1>
+<p class="split-sub">Don't have an account yet? <button type="button" onclick="location.href='signup.html'">Sign Up</button></p>
+
+<div class="fg-dark">
+<label>Email Address</label>
 <input type="email" id="loginEmail" placeholder="you@company.com"/>
 </div>
-<div class="fg">
-<label class="fl">Password</label>
+<div class="fg-dark">
+<label>Password</label>
 <input type="password" id="loginPassword" placeholder="••••••••"/>
 </div>
-<div class="field-error" id="loginError"></div>
+<div class="field-error-dark" id="loginError"></div>
 
-<div class="row-between">
-<label class="remember"><input type="checkbox"/> Remember me</label>
-<button type="button" class="link" onclick="alert('Password reset isn\'t wired up in this demo yet.')">Forgot password?</button>
+<div class="row-between-dark">
+<label class="remember-dark"><input type="checkbox"/> Keep me logged in</label>
+<button type="button" class="link-dark" onclick="alert('Password reset isn\'t wired up in this demo yet.')">Forgot Password?</button>
 </div>
 
-<button class="btn-block" type="button" onclick="handleLogin()">Log In</button>
-
-<div class="divider">or</div>
-
-<button class="btn-outline" type="button" onclick="handleGoogleLogin()">
-<svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.63h6.47a5.53 5.53 0 0 1-2.4 3.63v3h3.87c2.27-2.09 3.58-5.17 3.58-8.81z"/><path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.94-2.92l-3.87-3c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.28v3.11A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.27 14.27a7.2 7.2 0 0 1 0-4.54v-3.1H1.28a12 12 0 0 0 0 10.75l3.99-3.11z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.35.61 4.6 1.8l3.44-3.44C17.95 1.19 15.24 0 12 0A12 12 0 0 0 1.28 6.63l3.99 3.1C6.22 6.88 8.87 4.77 12 4.77z"/></svg>
-Continue with Google
-</button>
-
-<div class="foot-note">Don't have an account? <button type="button" class="link" onclick="handleGoogleLogin()">Sign up</button></div>
+<button class="btn-light-block" type="button" onclick="handleLogin()">Login</button>
 </div>
+</div>
+
 </div>
 
 <script src="js/login.js"></script>
