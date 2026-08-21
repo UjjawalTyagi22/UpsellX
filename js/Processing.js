@@ -21,7 +21,6 @@ function firstNameOf(name) {
 }
 
 function initialsFromName(name) {
-
     const parts =
         (name || 'User')
             .trim()
@@ -40,7 +39,6 @@ function initialsFromName(name) {
 }
 
 function currentUser() {
-
     const demo =
         getParam('demo') === '1';
 
@@ -66,18 +64,15 @@ function currentUser() {
 /* ---------- navigation ---------- */
 
 function renderNav(context) {
-
     const navMid = $('navMid');
     const navRight = $('navRight');
 
     if (context === 'guest') {
-
         if (navMid) {
             navMid.style.display = 'flex';
         }
 
         if (navRight) {
-
             navRight.innerHTML = `
                 <button
                     class="nav-ghost"
@@ -98,13 +93,11 @@ function renderNav(context) {
         }
 
     } else if (context === 'login') {
-
         if (navMid) {
             navMid.style.display = 'none';
         }
 
         if (navRight) {
-
             navRight.innerHTML = `
                 <button
                     class="nav-ghost"
@@ -117,7 +110,6 @@ function renderNav(context) {
         }
 
     } else {
-
         if (navMid) {
             navMid.style.display = 'none';
         }
@@ -130,10 +122,8 @@ function renderNav(context) {
             );
 
         if (navRight) {
-
             navRight.innerHTML = `
                 <div class="nav-user">
-
                     <div class="avatar">
                         ${initials}
                     </div>
@@ -145,7 +135,6 @@ function renderNav(context) {
                             )
                         )}
                     </span>
-
                 </div>
 
                 <button
@@ -166,19 +155,15 @@ function renderNav(context) {
 ========================================================= */
 
 function getFileForProcessing() {
-
     return new Promise((resolve, reject) => {
-
         const request =
             indexedDB.open(
                 'UpsellXDB',
                 1
             );
 
-
         request.onsuccess =
             function (event) {
-
                 const db =
                     event.target.result;
 
@@ -198,33 +183,25 @@ function getFileForProcessing() {
                         'currentFile'
                     );
 
-
                 requestFile.onsuccess =
                     function () {
-
                         db.close();
-
                         resolve(
                             requestFile.result
                         );
                     };
 
-
                 requestFile.onerror =
                     function () {
-
                         db.close();
-
                         reject(
                             requestFile.error
                         );
                     };
             };
 
-
         request.onerror =
             function () {
-
                 reject(
                     request.error
                 );
@@ -238,17 +215,11 @@ function getFileForProcessing() {
 ========================================================= */
 
 async function callMLModel(file) {
-
     console.log(
         'Sending file to ML model:',
         file.name
     );
 
-
-    /*
-     * FormData sends the CSV file
-     * to FastAPI.
-     */
     const formData =
         new FormData();
 
@@ -257,10 +228,6 @@ async function callMLModel(file) {
         file
     );
 
-
-    /*
-     * THIS IS THE ACTUAL API CALL.
-     */
     const response =
         await fetch(
             'http://127.0.0.1:8000/api/predict',
@@ -271,15 +238,12 @@ async function callMLModel(file) {
             }
         );
 
-
     console.log(
         'ML API status:',
         response.status
     );
 
-
     if (!response.ok) {
-
         const errorText =
             await response.text();
 
@@ -293,26 +257,18 @@ async function callMLModel(file) {
         );
     }
 
-
-    /*
-     * Get actual ML result.
-     */
     const result =
         await response.json();
-
 
     console.log(
         '========== ML RESULT =========='
     );
-
     console.log(
         result
     );
-
     console.log(
         '================================'
     );
-
 
     return result;
 }
@@ -323,12 +279,10 @@ async function callMLModel(file) {
 ========================================================= */
 
 function saveMLResult(result) {
-
     sessionStorage.setItem(
         'upsellResults',
         JSON.stringify(result)
     );
-
 
     console.log(
         'ML result saved in sessionStorage'
@@ -341,7 +295,6 @@ function saveMLResult(result) {
 ========================================================= */
 
 function goToDashboard() {
-
     console.log(
         'Opening Dashboard...'
     );
@@ -350,13 +303,16 @@ function goToDashboard() {
         'Dashboard.html';
 }
 
+function skipProcessing() {
+    goToDashboard();
+}
+
 
 /* =========================================================
    UPDATE PROCESSING UI
 ========================================================= */
 
 function setTaskState(idx, state) {
-
     const row =
         $('taskrow' + idx);
 
@@ -370,16 +326,13 @@ function setTaskState(idx, state) {
             ? ''
             : state);
 
-
     const icon =
         row.querySelector('.ticon');
 
     const status =
         row.querySelector('.tstatus');
 
-
     if (state === 'done') {
-
         icon.innerHTML = `
             <svg
                 viewBox="0 0 24 24"
@@ -397,7 +350,6 @@ function setTaskState(idx, state) {
             'Done';
 
     } else if (state === 'current') {
-
         icon.innerHTML = `
             <svg
                 class="spin"
@@ -422,7 +374,6 @@ function setTaskState(idx, state) {
             'Running';
 
     } else {
-
         icon.innerHTML = '';
 
         status.textContent =
@@ -436,23 +387,18 @@ function setTaskState(idx, state) {
 ========================================================= */
 
 function updateProgressUI(progress) {
-
     const ringVal =
         $('ringVal');
 
     const ringProgress =
         $('ringProgress');
 
-
     if (ringVal) {
-
         ringVal.textContent =
             Math.round(progress) + '%';
     }
 
-
     if (ringProgress) {
-
         ringProgress.setAttribute(
             'stroke-dashoffset',
             (
@@ -475,20 +421,16 @@ const THRESH = [
 
 
 function updateTasksByProgress(progress) {
-
     for (let i = 1; i <= 6; i++) {
-
         const previousThreshold =
             i === 1
                 ? 0
                 : THRESH[i - 2];
 
-
         if (
             progress >=
             THRESH[i - 1]
         ) {
-
             setTaskState(
                 i,
                 'done'
@@ -498,14 +440,12 @@ function updateTasksByProgress(progress) {
             progress >=
             previousThreshold
         ) {
-
             setTaskState(
                 i,
                 'current'
             );
 
         } else {
-
             setTaskState(
                 i,
                 'pending'
@@ -515,162 +455,99 @@ function updateTasksByProgress(progress) {
 }
 
 
+/**
+ * Helper: Helper promise delay
+ */
+function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+
 /* =========================================================
    MAIN PROCESS
 ========================================================= */
 
 async function runProcessing() {
-
     try {
+        console.log('Processing started...');
 
-        console.log(
-            'Processing started...'
-        );
-
-
-        /* -----------------------------------------
-           STEP 1 — Get CSV from IndexedDB
-        ----------------------------------------- */
-
+        // 1. Get CSV file
         updateProgressUI(5);
-
         updateTasksByProgress(5);
 
-
-        const file =
-            await getFileForProcessing();
-
+        const file = await getFileForProcessing();
 
         if (!file) {
-
-            throw new Error(
-                'No uploaded file found.'
-            );
+            throw new Error('No uploaded file found.');
         }
 
+        console.log('File retrieved:', file.name);
 
-        console.log(
-            'File retrieved:',
-            file.name
-        );
-
-
-        /* -----------------------------------------
-           STEP 2 — Update UI
-        ----------------------------------------- */
-
-        updateProgressUI(20);
-
-        updateTasksByProgress(20);
-
-
-        const procSub =
-            $('procSub');
-
-
+        const procSub = $('procSub');
         if (procSub) {
-
             procSub.innerHTML =
                 'Sending <strong>' +
                 escapeHtml(file.name) +
                 '</strong> to the ML model...';
         }
 
+        // 2. Start asynchronous ML Call and Progress Animation concurrently
+        let currentProgress = 5;
+        let isMLDone = false;
 
-        /* -----------------------------------------
-           STEP 3 — CALL ML API
-        ----------------------------------------- */
+        // Kick off ML Request
+        const mlPromise = callMLModel(file).then((res) => {
+            isMLDone = true;
+            return res;
+        });
 
-        updateProgressUI(30);
+        // Ticker loop: Increment smoothly through randomized steps
+        while (!isMLDone && currentProgress < 90) {
+            // Random increment between 3% and 12%
+            const increment = Math.floor(Math.random() * 10) + 3;
+            currentProgress = Math.min(90, currentProgress + increment);
 
-        updateTasksByProgress(30);
+            updateProgressUI(currentProgress);
+            updateTasksByProgress(currentProgress);
 
-
-        const result =
-            await callMLModel(file);
-
-
-        /* -----------------------------------------
-           STEP 4 — REAL RESULT RECEIVED
-        ----------------------------------------- */
-
-        console.log(
-            'Prediction received successfully.'
-        );
-
-
-        updateProgressUI(80);
-
-        updateTasksByProgress(80);
-
-
-        /* -----------------------------------------
-           STEP 5 — SAVE RESULT
-        ----------------------------------------- */
-
-        saveMLResult(result);
-
-
-        updateProgressUI(95);
-
-        updateTasksByProgress(95);
-
-
-        /* -----------------------------------------
-           STEP 6 — Complete
-        ----------------------------------------- */
-
-        updateProgressUI(100);
-
-        updateTasksByProgress(100);
-
-
-        console.log(
-            'Processing complete.'
-        );
-
-
-        /*
-         * Give UI a small moment to show 100%.
-         */
-        setTimeout(
-            goToDashboard,
-            500
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            'PROCESSING ERROR:',
-            error
-        );
-
-
-        /*
-         * Show error in browser console.
-         */
-        const procSub =
-            $('procSub');
-
-
-        if (procSub) {
-
-            procSub.innerHTML =
-                '<strong>Processing failed.</strong> ' +
-                escapeHtml(
-                    error.message
-                );
+            // Wait between 250ms and 500ms before next increment
+            const delay = Math.floor(Math.random() * 250) + 250;
+            await sleep(delay);
         }
 
+        // Wait for ML call if it takes longer
+        const result = await mlPromise;
 
-        /*
-         * Don't automatically go
-         * to Dashboard if ML failed.
-         */
-        alert(
-            'ML prediction failed. Check the browser console.'
-        );
+        console.log('Prediction received successfully.');
+
+        // 3. Smooth transition to 100%
+        if (currentProgress < 95) {
+            updateProgressUI(95);
+            updateTasksByProgress(95);
+            await sleep(300);
+        }
+
+        updateProgressUI(100);
+        updateTasksByProgress(100);
+
+        // 4. Save result & navigate
+        saveMLResult(result);
+
+        console.log('Processing complete.');
+
+        setTimeout(goToDashboard, 600);
+
+    } catch (error) {
+        console.error('PROCESSING ERROR:', error);
+
+        const procSub = $('procSub');
+        if (procSub) {
+            procSub.innerHTML =
+                '<strong>Processing failed.</strong> ' +
+                escapeHtml(error.message);
+        }
+
+        alert('ML prediction failed. Check the browser console.');
     }
 }
 
@@ -681,21 +558,13 @@ async function runProcessing() {
 
 renderNav('auth');
 
+const fileName = getParam('file');
 
-const fileName =
-    getParam('file');
-
-
-if (
-    fileName &&
-    $('procSub')
-) {
-
+if (fileName && $('procSub')) {
     $('procSub').innerHTML =
         'Sit tight while we send <strong>' +
         escapeHtml(fileName) +
         '</strong> to the ML model.';
 }
-
 
 runProcessing();

@@ -323,8 +323,11 @@ box-shadow:0 1px 3px rgba(0,0,0,.04),0 2px 12px rgba(0,0,0,.04)}
 .stat.s-up .s-bar{background:var(--upsell)}
 .stat.s-risk .s-bar{background:var(--risk)}
 
-.grid{display:grid;grid-template-columns:1fr 370px;gap:1.5rem}
-.lcol,.rcol{display:flex;flex-direction:column;gap:1.5rem}
+.grid {
+  display: flex;
+  gap: 1.5rem;
+  align-items: stretch; /* Stretches left and right columns to equal height */
+}.lcol,.rcol{display:flex;flex-direction:column;gap:1.5rem}
 .card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
 .tabs{display:flex;gap:5px;margin-bottom:1rem;flex-wrap:wrap}
 .tab{flex:1;min-width:120px;padding:8px;border-radius:8px;border:1px solid var(--border2);background:rgba(0,0,0,.03);
@@ -338,7 +341,7 @@ color:var(--muted);font-size:.76rem;font-weight:700;cursor:pointer;transition:al
 .tab{min-width:0}
 }
 
-.custlist{display:flex;flex-direction:column;gap:6px;max-height:420px;overflow-y:auto}
+.custlist{display:flex;flex-direction:column;gap:6px;overflow-y:auto}
 .custlist::-webkit-scrollbar{width:3px}
 .custlist::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 .custrow{display:flex;align-items:center;gap:11px;background:rgba(0,0,0,.02);border:1px solid var(--border);
@@ -494,6 +497,27 @@ align-items:center;justify-content:center;flex-shrink:0}
 padding:10px 14px;display:flex;align-items:center;gap:10px;z-index:2;animation:illusFloat 4.2s ease-in-out infinite}
 .illus-float.f1{top:18px;right:-14px}
 .illus-float.f2{bottom:56px;left:-28px;animation-delay:.7s}
+
+
+/* Ensure the left column and card expand to fill available height */
+.lcol {
+  display: flex;
+  flex-direction: column;
+}
+
+.lcol .card {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Fills the stretched height of the left column */
+  max-height: none; /* Removes fixed height caps */
+}
+
+/* Make the list consume all remaining space and enable internal scrolling */
+.custlist {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto; /* Adds vertical scrollbar when items overflow */
+}
 @keyframes illusFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
 .illus-float .ic{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .illus-float.f1 .ic{background:#e6f3ec}
@@ -513,4 +537,5 @@ padding:10px 14px;display:flex;align-items:center;gap:10px;z-index:2;animation:i
 .split-right{padding:2.2rem 1.4rem}
 .split-right-inner h1{font-size:1.65rem}
 .split-logo{top:20px;left:20px}
+
 }
