@@ -31,29 +31,26 @@ function initialsFromName(name) {
     ).toUpperCase();
 }
 
-function currentUser() {
-    const demo = getParam('demo') === '1';
-
-    const name =
-        getParam('name') ||
-        (demo ? 'Ananya Rao' : 'Guest');
-
-    const email =
-        getParam('email') ||
-        (demo ? 'ananya.rao@upsellx-demo.com' : '');
-
-    return {
-        name,
-        email,
-        demo,
-        loggedIn: !!name
-    };
+/* NAYA — ab URL params pe bharosa nahi karte. Seedha backend se
+   poochte hain "yeh JWT cookie kiska hai" — cookie hamesha
+   browser mein maujood hai, isliye yeh URL params se zyada
+   reliable hai (page-to-page carry karne ki zaroorat nahi). */
+async function currentUser() {
+    try {
+        const res = await fetch('http://127.0.0.1:8000/auth/me', { credentials: 'include' });
+        if (!res.ok) return { name: 'Guest', email: '', loggedIn: false };
+        const data = await res.json();
+        return { name: data.name, email: data.email, loggedIn: true };
+    } catch (e) {
+        return { name: 'Guest', email: '', loggedIn: false };
+    }
 }
 
 
 /* ---------- navigation ---------- */
 
-function renderNav(context) {
+/* renderNav ab async hai kyunki currentUser() backend call karta hai */
+async function renderNav(context) {
 
     const navMid = $('navMid');
     const navRight = $('navRight');
@@ -108,7 +105,7 @@ function renderNav(context) {
             navMid.style.display = 'none';
         }
 
-        const user = currentUser();
+        const user = await currentUser();
 
         const initials = initialsFromName(
             user.name || 'User'
@@ -495,4 +492,9 @@ async function continueToProcessing() {
 
 /* ---------- page initialization ---------- */
 
-renderNav('auth');
+/* renderNav ab async hai, isliye init ko bhi async banaya */
+async function initPage() {
+    await renderNav('auth');
+}
+
+initPage();

@@ -21,6 +21,7 @@ function firstNameOf(name) {
 }
 
 function initialsFromName(name) {
+
     const parts =
         (name || 'User')
             .trim()
@@ -38,41 +39,38 @@ function initialsFromName(name) {
     ).toUpperCase();
 }
 
-function currentUser() {
-    const demo =
-        getParam('demo') === '1';
-
-    const name =
-        getParam('name') ||
-        (demo ? 'Ananya Rao' : 'Guest');
-
-    const email =
-        getParam('email') ||
-        (demo
-            ? 'ananya.rao@upsellx-demo.com'
-            : '');
-
-    return {
-        name,
-        email,
-        demo,
-        loggedIn: !!name
-    };
+/* NAYA — ab URL params pe bharosa nahi karte. Seedha backend se
+   poochte hain "yeh JWT cookie kiska hai" — cookie hamesha
+   browser mein maujood hai, isliye yeh URL params se zyada
+   reliable hai (page-to-page carry karne ki zaroorat nahi). */
+async function currentUser() {
+    try {
+        const res = await fetch('http://127.0.0.1:8000/auth/me', { credentials: 'include' });
+        if (!res.ok) return { name: 'Guest', email: '', loggedIn: false };
+        const data = await res.json();
+        return { name: data.name, email: data.email, loggedIn: true };
+    } catch (e) {
+        return { name: 'Guest', email: '', loggedIn: false };
+    }
 }
 
 
 /* ---------- navigation ---------- */
 
-function renderNav(context) {
+/* renderNav ab async hai kyunki currentUser() backend call karta hai */
+async function renderNav(context) {
+
     const navMid = $('navMid');
     const navRight = $('navRight');
 
     if (context === 'guest') {
+
         if (navMid) {
             navMid.style.display = 'flex';
         }
 
         if (navRight) {
+
             navRight.innerHTML = `
                 <button
                     class="nav-ghost"
@@ -93,11 +91,13 @@ function renderNav(context) {
         }
 
     } else if (context === 'login') {
+
         if (navMid) {
             navMid.style.display = 'none';
         }
 
         if (navRight) {
+
             navRight.innerHTML = `
                 <button
                     class="nav-ghost"
@@ -110,11 +110,12 @@ function renderNav(context) {
         }
 
     } else {
+
         if (navMid) {
             navMid.style.display = 'none';
         }
 
-        const user = currentUser();
+        const user = await currentUser();
 
         const initials =
             initialsFromName(
@@ -122,8 +123,10 @@ function renderNav(context) {
             );
 
         if (navRight) {
+
             navRight.innerHTML = `
                 <div class="nav-user">
+
                     <div class="avatar">
                         ${initials}
                     </div>
@@ -135,6 +138,7 @@ function renderNav(context) {
                             )
                         )}
                     </span>
+
                 </div>
 
                 <button
@@ -155,15 +159,19 @@ function renderNav(context) {
 ========================================================= */
 
 function getFileForProcessing() {
+
     return new Promise((resolve, reject) => {
+
         const request =
             indexedDB.open(
                 'UpsellXDB',
                 1
             );
 
+
         request.onsuccess =
             function (event) {
+
                 const db =
                     event.target.result;
 
@@ -183,25 +191,33 @@ function getFileForProcessing() {
                         'currentFile'
                     );
 
+
                 requestFile.onsuccess =
                     function () {
+
                         db.close();
+
                         resolve(
                             requestFile.result
                         );
                     };
 
+
                 requestFile.onerror =
                     function () {
+
                         db.close();
+
                         reject(
                             requestFile.error
                         );
                     };
             };
 
+
         request.onerror =
             function () {
+
                 reject(
                     request.error
                 );
@@ -215,11 +231,17 @@ function getFileForProcessing() {
 ========================================================= */
 
 async function callMLModel(file) {
+
     console.log(
         'Sending file to ML model:',
         file.name
     );
 
+
+    /*
+     * FormData sends the CSV file
+     * to FastAPI.
+     */
     const formData =
         new FormData();
 
@@ -228,6 +250,10 @@ async function callMLModel(file) {
         file
     );
 
+
+    /*
+     * THIS IS THE ACTUAL API CALL.
+     */
     const response =
         await fetch(
             'http://127.0.0.1:8000/api/predict',
@@ -238,12 +264,15 @@ async function callMLModel(file) {
             }
         );
 
+
     console.log(
         'ML API status:',
         response.status
     );
 
+
     if (!response.ok) {
+
         const errorText =
             await response.text();
 
@@ -257,18 +286,26 @@ async function callMLModel(file) {
         );
     }
 
+
+    /*
+     * Get actual ML result.
+     */
     const result =
         await response.json();
+
 
     console.log(
         '========== ML RESULT =========='
     );
+
     console.log(
         result
     );
+
     console.log(
         '================================'
     );
+
 
     return result;
 }
@@ -279,10 +316,12 @@ async function callMLModel(file) {
 ========================================================= */
 
 function saveMLResult(result) {
+
     sessionStorage.setItem(
         'upsellResults',
         JSON.stringify(result)
     );
+
 
     console.log(
         'ML result saved in sessionStorage'
@@ -295,6 +334,7 @@ function saveMLResult(result) {
 ========================================================= */
 
 function goToDashboard() {
+
     console.log(
         'Opening Dashboard...'
     );
@@ -303,16 +343,13 @@ function goToDashboard() {
         'Dashboard.html';
 }
 
-function skipProcessing() {
-    goToDashboard();
-}
-
 
 /* =========================================================
    UPDATE PROCESSING UI
 ========================================================= */
 
 function setTaskState(idx, state) {
+
     const row =
         $('taskrow' + idx);
 
@@ -326,13 +363,16 @@ function setTaskState(idx, state) {
             ? ''
             : state);
 
+
     const icon =
         row.querySelector('.ticon');
 
     const status =
         row.querySelector('.tstatus');
 
+
     if (state === 'done') {
+
         icon.innerHTML = `
             <svg
                 viewBox="0 0 24 24"
@@ -350,6 +390,7 @@ function setTaskState(idx, state) {
             'Done';
 
     } else if (state === 'current') {
+
         icon.innerHTML = `
             <svg
                 class="spin"
@@ -374,6 +415,7 @@ function setTaskState(idx, state) {
             'Running';
 
     } else {
+
         icon.innerHTML = '';
 
         status.textContent =
@@ -387,18 +429,23 @@ function setTaskState(idx, state) {
 ========================================================= */
 
 function updateProgressUI(progress) {
+
     const ringVal =
         $('ringVal');
 
     const ringProgress =
         $('ringProgress');
 
+
     if (ringVal) {
+
         ringVal.textContent =
             Math.round(progress) + '%';
     }
 
+
     if (ringProgress) {
+
         ringProgress.setAttribute(
             'stroke-dashoffset',
             (
@@ -421,16 +468,20 @@ const THRESH = [
 
 
 function updateTasksByProgress(progress) {
+
     for (let i = 1; i <= 6; i++) {
+
         const previousThreshold =
             i === 1
                 ? 0
                 : THRESH[i - 2];
 
+
         if (
             progress >=
             THRESH[i - 1]
         ) {
+
             setTaskState(
                 i,
                 'done'
@@ -440,12 +491,14 @@ function updateTasksByProgress(progress) {
             progress >=
             previousThreshold
         ) {
+
             setTaskState(
                 i,
                 'current'
             );
 
         } else {
+
             setTaskState(
                 i,
                 'pending'
@@ -455,11 +508,84 @@ function updateTasksByProgress(progress) {
 }
 
 
-/**
- * Helper: Helper promise delay
- */
-function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+/* =========================================================
+   ERROR MODAL  (NAYA — browser ka bhaddha alert() ki jagah,
+   same Privacy/Terms/Contact wala modal design reuse kiya)
+========================================================= */
+
+function showErrorModal(message) {
+
+    $('modalTitle').innerHTML = `
+        <span style="display:inline-flex; align-items:center; gap:9px; color:#8c2424;">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#8c2424" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L14.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <path d="M12 9v4"/>
+                <path d="M12 17h.01"/>
+            </svg>
+            Processing failed
+        </span>
+    `;
+
+    $('modalBody').innerHTML = `
+        <p>We couldn't generate predictions for this file.</p>
+        <h4>Likely reason</h4>
+        <p>The uploaded file may be missing required columns, use different
+        column names, or contain corrupted rows. Double-check it matches the
+        expected CDR format, then try uploading again.</p>
+        <h4>Technical detail</h4>
+        <p>${escapeHtml(message)}</p>
+    `;
+
+    $('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    $('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function handleOverlayClick(e) {
+    if (e.target.id === 'modalOverlay') closeModal();
+}
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+});
+
+
+/* NAYA — button ka default (normal) behaviour. Pehle yeh
+   function kahin define hi nahi tha, isliye button click
+   karne pe error aata tha. */
+function skipProcessing() {
+    location.href = 'Dashboard.html';
+}
+
+/* NAYA — jab processing fail ho jaaye, button ka text aur
+   kaam dono badal do: ab yeh seedha upload page pe le jayega,
+   taaki user turant naya (sahi) file try kar sake. */
+function showRetryButton() {
+    const btn = $('skipBtn');
+    if (!btn) return;
+
+    btn.textContent = 'Upload file again';
+
+    btn.onclick = function () {
+        location.href = 'upload.html';
+    };
+}
+
+
+/* NAYA — jab processing fail ho, progress aur saare pipeline
+   steps ko turant wapas 0%/pending pe le aata hai — taaki koi
+   bhi step "done" na dikhe jabki asli kaam fail ho chuka hai. */
+function resetProcessingUI() {
+
+    updateProgressUI(0);
+
+    for (let i = 1; i <= 6; i++) {
+        setTaskState(i, 'pending');
+    }
 }
 
 
@@ -468,86 +594,191 @@ function sleep(ms) {
 ========================================================= */
 
 async function runProcessing() {
+
+    /* NAYA — yeh variable try ke bahar declare kiya hai taaki
+       agar error aaye to catch block bhi ise access karke
+       turant band kar sake. */
+    let climbInterval;
+
     try {
-        console.log('Processing started...');
 
-        // 1. Get CSV file
-        updateProgressUI(5);
-        updateTasksByProgress(5);
+        console.log(
+            'Processing started...'
+        );
 
-        const file = await getFileForProcessing();
+
+        /* -----------------------------------------
+           STEP 1 — Get CSV from IndexedDB
+        ----------------------------------------- */
+
+        let progress = 5;
+
+        updateProgressUI(progress);
+
+        updateTasksByProgress(progress);
+
+
+        const file =
+            await getFileForProcessing();
+
 
         if (!file) {
-            throw new Error('No uploaded file found.');
+
+            throw new Error(
+                'No uploaded file found.'
+            );
         }
 
-        console.log('File retrieved:', file.name);
 
-        const procSub = $('procSub');
+        console.log(
+            'File retrieved:',
+            file.name
+        );
+
+
+        /* -----------------------------------------
+           STEP 2 — Update UI
+        ----------------------------------------- */
+
+        const procSub =
+            $('procSub');
+
+
         if (procSub) {
+
             procSub.innerHTML =
                 'Sending <strong>' +
                 escapeHtml(file.name) +
                 '</strong> to the ML model...';
         }
 
-        // 2. Start asynchronous ML Call and Progress Animation concurrently
-        let currentProgress = 5;
-        let isMLDone = false;
 
-        // Kick off ML Request
-        const mlPromise = callMLModel(file).then((res) => {
-            isMLDone = true;
-            return res;
-        });
+        /* -----------------------------------------
+           STEP 3 — CALL ML API
+           ------------------------------------------
+           NAYA — asli API call ka exact time pata
+           nahi hota (chhoti file jaldi, badi file
+           slow), isliye hum progress ko random
+           chhote steps mein "fake climb" karate hain
+           jab tak asli result nahi aa jaata.
 
-        // Ticker loop: Increment smoothly through randomized steps
-        while (!isMLDone && currentProgress < 90) {
-            // Random increment between 3% and 12%
-            const increment = Math.floor(Math.random() * 10) + 3;
-            currentProgress = Math.min(90, currentProgress + increment);
+           90% se aage khud kabhi nahi jaayega —
+           warna result aane se pehle hi "complete"
+           dikhne lagega. Real result aate hi seedha
+           100% pe snap ho jaayega.
+        ----------------------------------------- */
 
-            updateProgressUI(currentProgress);
-            updateTasksByProgress(currentProgress);
+        climbInterval = setInterval(() => {
 
-            // Wait between 250ms and 500ms before next increment
-            const delay = Math.floor(Math.random() * 250) + 250;
-            await sleep(delay);
-        }
+            if (progress < 90) {
 
-        // Wait for ML call if it takes longer
-        const result = await mlPromise;
+                progress += Math.random() * 4 + 1.5;
+                progress = Math.min(progress, 90);
 
-        console.log('Prediction received successfully.');
+                updateProgressUI(progress);
+                updateTasksByProgress(progress);
+            }
 
-        // 3. Smooth transition to 100%
-        if (currentProgress < 95) {
-            updateProgressUI(95);
-            updateTasksByProgress(95);
-            await sleep(300);
-        }
+        }, 350);
+
+
+        const result =
+            await callMLModel(file);
+
+
+        /* Asli result aa gaya — fake climbing band karo */
+        clearInterval(climbInterval);
+
+
+        /* -----------------------------------------
+           STEP 4 — REAL RESULT RECEIVED
+        ----------------------------------------- */
+
+        console.log(
+            'Prediction received successfully.'
+        );
 
         updateProgressUI(100);
+
         updateTasksByProgress(100);
 
-        // 4. Save result & navigate
+
+        /* -----------------------------------------
+           STEP 5 — SAVE RESULT
+        ----------------------------------------- */
+
         saveMLResult(result);
 
-        console.log('Processing complete.');
 
-        setTimeout(goToDashboard, 600);
+        console.log(
+            'Processing complete.'
+        );
+
+
+        /*
+         * Give UI a small moment to show 100%.
+         */
+        setTimeout(
+            goToDashboard,
+            500
+        );
+
 
     } catch (error) {
-        console.error('PROCESSING ERROR:', error);
 
-        const procSub = $('procSub');
-        if (procSub) {
-            procSub.innerHTML =
-                '<strong>Processing failed.</strong> ' +
-                escapeHtml(error.message);
+        console.error(
+            'PROCESSING ERROR:',
+            error
+        );
+
+
+        /*
+         * NAYA — fake climbing turant band karo, warna
+         * task rows galat tarike se "done" dikhte rahenge
+         * asli error ke baad bhi.
+         */
+        if (climbInterval) {
+            clearInterval(climbInterval);
         }
 
-        alert('ML prediction failed. Check the browser console.');
+
+        /*
+         * NAYA — progress aur saare pipeline steps wapas
+         * 0% / pending pe reset karo — koi bhi "done" tick
+         * nahi dikhni chahiye jab processing fail ho chuki ho.
+         */
+        resetProcessingUI();
+
+
+        /*
+         * NAYA — "Skip ahead" button ko "Upload file again"
+         * mein badal do, seedha upload page pe le jaane ke liye.
+         */
+        showRetryButton();
+
+
+        /*
+         * Show error in browser console.
+         */
+        const procSub =
+            $('procSub');
+
+
+        if (procSub) {
+
+            procSub.innerHTML =
+                '<strong>Processing failed.</strong> ' +
+                escapeHtml(
+                    error.message
+                );
+        }
+
+
+        /*
+         * Don't automatically go
+         * to Dashboard if ML failed.
+         */
+        showErrorModal(error.message);
     }
 }
 
@@ -556,15 +787,26 @@ async function runProcessing() {
    PAGE INITIALIZATION
 ========================================================= */
 
-renderNav('auth');
+/* renderNav ab async hai, isliye init ko bhi async banaya */
+async function initPage() {
 
-const fileName = getParam('file');
+    await renderNav('auth');
 
-if (fileName && $('procSub')) {
-    $('procSub').innerHTML =
-        'Sit tight while we send <strong>' +
-        escapeHtml(fileName) +
-        '</strong> to the ML model.';
+    const fileName =
+        getParam('file');
+
+    if (
+        fileName &&
+        $('procSub')
+    ) {
+
+        $('procSub').innerHTML =
+            'Sit tight while we send <strong>' +
+            escapeHtml(fileName) +
+            '</strong> to the ML model.';
+    }
+
+    runProcessing();
 }
 
-runProcessing();
+initPage();
