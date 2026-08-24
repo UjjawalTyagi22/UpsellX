@@ -39,10 +39,6 @@ function initialsFromName(name) {
     ).toUpperCase();
 }
 
-/* NAYA — ab URL params pe bharosa nahi karte. Seedha backend se
-   poochte hain "yeh JWT cookie kiska hai" — cookie hamesha
-   browser mein maujood hai, isliye yeh URL params se zyada
-   reliable hai (page-to-page carry karne ki zaroorat nahi). */
 async function currentUser() {
     try {
         const res = await fetch('http://127.0.0.1:8000/auth/me', { credentials: 'include' });
@@ -57,7 +53,6 @@ async function currentUser() {
 
 /* ---------- navigation ---------- */
 
-/* renderNav ab async hai kyunki currentUser() backend call karta hai */
 async function renderNav(context) {
 
     const navMid = $('navMid');
@@ -237,11 +232,6 @@ async function callMLModel(file) {
         file.name
     );
 
-
-    /*
-     * FormData sends the CSV file
-     * to FastAPI.
-     */
     const formData =
         new FormData();
 
@@ -250,10 +240,6 @@ async function callMLModel(file) {
         file
     );
 
-
-    /*
-     * THIS IS THE ACTUAL API CALL.
-     */
     const response =
         await fetch(
             'http://127.0.0.1:8000/api/predict',
@@ -264,35 +250,37 @@ async function callMLModel(file) {
             }
         );
 
-
     console.log(
         'ML API status:',
         response.status
     );
 
-
     if (!response.ok) {
 
-        const errorText =
-            await response.text();
+        let errorData;
+        try {
+            errorData = await response.json();
+        } catch (e) {
+            errorData = { detail: await response.text() };
+        }
 
         console.error(
             'ML API error:',
-            errorText
+            errorData
         );
 
-        throw new Error(
-            `ML API returned ${response.status}`
-        );
+        const detailMsg = typeof errorData.detail === 'object' && errorData.detail !== null
+            ? (errorData.detail.message || JSON.stringify(errorData.detail))
+            : errorData.detail;
+
+        const err = new Error(detailMsg || `ML API returned ${response.status}`);
+        err.detail = errorData.detail;
+        err.status = response.status;
+        throw err;
     }
 
-
-    /*
-     * Get actual ML result.
-     */
     const result =
         await response.json();
-
 
     console.log(
         '========== ML RESULT =========='
@@ -305,7 +293,6 @@ async function callMLModel(file) {
     console.log(
         '================================'
     );
-
 
     return result;
 }
@@ -321,7 +308,6 @@ function saveMLResult(result) {
         'upsellResults',
         JSON.stringify(result)
     );
-
 
     console.log(
         'ML result saved in sessionStorage'
@@ -509,11 +495,14 @@ function updateTasksByProgress(progress) {
 
 
 /* =========================================================
-   ERROR MODAL  (NAYA — browser ka bhaddha alert() ki jagah,
-   same Privacy/Terms/Contact wala modal design reuse kiya)
+   ERROR MODAL
 ========================================================= */
 
-function showErrorModal(message) {
+function showErrorModal(techDetailMessage, likelyReasonText) {
+
+    const reason = likelyReasonText || `The uploaded file may be missing required columns, use different
+        column names, or contain corrupted rows. Double-check it matches the
+        expected CDR format, then try uploading again.`;
 
     $('modalTitle').innerHTML = `
         <span style="display:inline-flex; align-items:center; gap:9px; color:#8c2424;">
@@ -529,11 +518,9 @@ function showErrorModal(message) {
     $('modalBody').innerHTML = `
         <p>We couldn't generate predictions for this file.</p>
         <h4>Likely reason</h4>
-        <p>The uploaded file may be missing required columns, use different
-        column names, or contain corrupted rows. Double-check it matches the
-        expected CDR format, then try uploading again.</p>
+        <p>${escapeHtml(reason)}</p>
         <h4>Technical detail</h4>
-        <p>${escapeHtml(message)}</p>
+        <p>${escapeHtml(techDetailMessage)}</p>
     `;
 
     $('modalOverlay').classList.add('open');
@@ -553,17 +540,10 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeModal();
 });
 
-
-/* NAYA — button ka default (normal) behaviour. Pehle yeh
-   function kahin define hi nahi tha, isliye button click
-   karne pe error aata tha. */
 function skipProcessing() {
     location.href = 'Dashboard.html';
 }
 
-/* NAYA — jab processing fail ho jaaye, button ka text aur
-   kaam dono badal do: ab yeh seedha upload page pe le jayega,
-   taaki user turant naya (sahi) file try kar sake. */
 function showRetryButton() {
     const btn = $('skipBtn');
     if (!btn) return;
@@ -575,10 +555,6 @@ function showRetryButton() {
     };
 }
 
-
-/* NAYA — jab processing fail ho, progress aur saare pipeline
-   steps ko turant wapas 0%/pending pe le aata hai — taaki koi
-   bhi step "done" na dikhe jabki asli kaam fail ho chuka hai. */
 function resetProcessingUI() {
 
     updateProgressUI(0);
@@ -595,9 +571,6 @@ function resetProcessingUI() {
 
 async function runProcessing() {
 
-    /* NAYA — yeh variable try ke bahar declare kiya hai taaki
-       agar error aaye to catch block bhi ise access karke
-       turant band kar sake. */
     let climbInterval;
 
     try {
@@ -606,67 +579,34 @@ async function runProcessing() {
             'Processing started...'
         );
 
-
-        /* -----------------------------------------
-           STEP 1 — Get CSV from IndexedDB
-        ----------------------------------------- */
-
         let progress = 5;
 
         updateProgressUI(progress);
-
         updateTasksByProgress(progress);
-
 
         const file =
             await getFileForProcessing();
 
-
         if (!file) {
-
             throw new Error(
                 'No uploaded file found.'
             );
         }
-
 
         console.log(
             'File retrieved:',
             file.name
         );
 
-
-        /* -----------------------------------------
-           STEP 2 — Update UI
-        ----------------------------------------- */
-
         const procSub =
             $('procSub');
 
-
         if (procSub) {
-
             procSub.innerHTML =
                 'Sending <strong>' +
                 escapeHtml(file.name) +
                 '</strong> to the ML model...';
         }
-
-
-        /* -----------------------------------------
-           STEP 3 — CALL ML API
-           ------------------------------------------
-           NAYA — asli API call ka exact time pata
-           nahi hota (chhoti file jaldi, badi file
-           slow), isliye hum progress ko random
-           chhote steps mein "fake climb" karate hain
-           jab tak asli result nahi aa jaata.
-
-           90% se aage khud kabhi nahi jaayega —
-           warna result aane se pehle hi "complete"
-           dikhne lagega. Real result aate hi seedha
-           100% pe snap ho jaayega.
-        ----------------------------------------- */
 
         climbInterval = setInterval(() => {
 
@@ -681,48 +621,28 @@ async function runProcessing() {
 
         }, 350);
 
-
         const result =
             await callMLModel(file);
 
-
-        /* Asli result aa gaya — fake climbing band karo */
         clearInterval(climbInterval);
-
-
-        /* -----------------------------------------
-           STEP 4 — REAL RESULT RECEIVED
-        ----------------------------------------- */
 
         console.log(
             'Prediction received successfully.'
         );
 
         updateProgressUI(100);
-
         updateTasksByProgress(100);
 
-
-        /* -----------------------------------------
-           STEP 5 — SAVE RESULT
-        ----------------------------------------- */
-
         saveMLResult(result);
-
 
         console.log(
             'Processing complete.'
         );
 
-
-        /*
-         * Give UI a small moment to show 100%.
-         */
         setTimeout(
             goToDashboard,
             500
         );
-
 
     } catch (error) {
 
@@ -731,41 +651,17 @@ async function runProcessing() {
             error
         );
 
-
-        /*
-         * NAYA — fake climbing turant band karo, warna
-         * task rows galat tarike se "done" dikhte rahenge
-         * asli error ke baad bhi.
-         */
         if (climbInterval) {
             clearInterval(climbInterval);
         }
 
-
-        /*
-         * NAYA — progress aur saare pipeline steps wapas
-         * 0% / pending pe reset karo — koi bhi "done" tick
-         * nahi dikhni chahiye jab processing fail ho chuki ho.
-         */
         resetProcessingUI();
-
-
-        /*
-         * NAYA — "Skip ahead" button ko "Upload file again"
-         * mein badal do, seedha upload page pe le jaane ke liye.
-         */
         showRetryButton();
 
-
-        /*
-         * Show error in browser console.
-         */
         const procSub =
             $('procSub');
 
-
         if (procSub) {
-
             procSub.innerHTML =
                 '<strong>Processing failed.</strong> ' +
                 escapeHtml(
@@ -773,12 +669,18 @@ async function runProcessing() {
                 );
         }
 
+        let likelyReason;
+        if (error.detail && typeof error.detail === 'object') {
+            likelyReason = error.detail.message;
+        } else if (typeof error.detail === 'string') {
+            likelyReason = error.detail;
+        } else {
+            likelyReason = error.message;
+        }
 
-        /*
-         * Don't automatically go
-         * to Dashboard if ML failed.
-         */
-        showErrorModal(error.message);
+        const techDetail = error.status ? `ML API returned status code ${error.status}` : (error.message || 'ML API call failed');
+
+        showErrorModal(techDetail, likelyReason);
     }
 }
 
@@ -787,7 +689,6 @@ async function runProcessing() {
    PAGE INITIALIZATION
 ========================================================= */
 
-/* renderNav ab async hai, isliye init ko bhi async banaya */
 async function initPage() {
 
     await renderNav('auth');

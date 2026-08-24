@@ -45,7 +45,7 @@
 <h3>Drag & drop your file here</h3>
 <p>or click to browse from your computer</p>
 <button class="btn-browse" type="button" onclick="event.stopPropagation(); fileInput.click();">Browse Files</button>
-<div class="dz-formats">Supports .csv, .xlsx — up to 25MB</div>
+<div class="dz-formats">Supports .csv — up to 10MB</div>
 </div>
 <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display:none" onchange="onFileInputChange(event)"/>
 <div class="field-error" id="uploadError"></div>
@@ -63,9 +63,9 @@
 <div class="card">
 <div class="clabel">File requirements</div>
 <div class="req-list">
-<!-- <div class="req-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Includes a customer_id column to uniquely identify each customer</div> -->
+<div class="req-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Contains only numeric values from 1 to 1000, with no negative values.</div>
 <div class="req-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Includes all required prediction fields, such as account length, voicemail, daily, evening, night, and international usage.</div>
-<div class="req-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Includes customer service call data and numeric values for model processing.</div>
+<div class="req-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Includes customer service call data for model processing.</div>
 <div class="req-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> One row per customer, with the first row containing column headers.</div>
 </div>
 </div>
