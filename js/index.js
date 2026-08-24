@@ -9,9 +9,24 @@ function niceNow() { return new Date().toLocaleString('en-IN', { day: 'numeric',
 function firstNameOf(name) { return (name || 'User').split(' ')[0]; }
 function initialsFromName(name) { const parts = (name || 'User').trim().split(/\s+/); if (parts.length === 1) return parts[0].charAt(0).toUpperCase(); return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase(); }
 function deriveNameFromEmail(email) { const local = email.split('@')[0] || 'user'; const parts = local.split(/[._\-0-9]+/).filter(Boolean); const named = parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' '); return named || 'User'; }
-function currentUser() { const demo = getParam('demo') === '1'; const name = getParam('name') || (demo ? 'Ananya Rao' : ''); const email = getParam('email') || (demo ? 'ananya.rao@upsellx-demo.com' : ''); return { name, email, demo, loggedIn: !!(name || demo) }; }
 
-function renderNav(context) {
+/* NAYA — ab URL params pe bharosa nahi karte. Seedha backend se
+   poochte hain "yeh JWT cookie kiska hai" — cookie hamesha
+   browser mein maujood hai, isliye yeh URL params se zyada
+   reliable hai (page-to-page carry karne ki zaroorat nahi). */
+async function currentUser() {
+  try {
+    const res = await fetch('http://127.0.0.1:8000/auth/me', { credentials: 'include' });
+    if (!res.ok) return { name: '', email: '', loggedIn: false };
+    const data = await res.json();
+    return { name: data.name, email: data.email, loggedIn: true };
+  } catch (e) {
+    return { name: '', email: '', loggedIn: false };
+  }
+}
+
+/* renderNav ab async hai kyunki currentUser() backend call karta hai */
+async function renderNav(context) {
   const navMid = $('navMid'), navRight = $('navRight');
   if (context === 'guest') {
     if (navMid) navMid.style.display = 'none';
@@ -23,7 +38,7 @@ function renderNav(context) {
     navRight.innerHTML = `<button class="nav-ghost" type="button" onclick="location.href='index.html'">Back to home</button>`;
   } else {
     if (navMid) navMid.style.display = 'none';
-    const user = currentUser();
+    const user = await currentUser();
     const initials = initialsFromName(user.name || 'User');
     const exportBtn = context === 'dashboard' ? `<button class="nav-btn" type="button" onclick="exportCSV()">Export CSV</button>` : '';
     navRight.innerHTML = `<div class="nav-user"><div class="avatar">${initials}</div><span class="nav-user-name">${escapeHtml(firstNameOf(user.name || 'User'))}</span></div>${exportBtn}<button class="nav-ghost" type="button" onclick="location.href='index.html'">Log out</button>`;
@@ -124,4 +139,6 @@ document.addEventListener('keydown', e => {
 });
 
 /* ---------- page init ---------- */
+/* Landing page hamesha 'guest' style nav dikhata hai (public page),
+   isliye currentUser() call hi nahi hota yahan — await ki zaroorat nahi. */
 renderNav('guest');
