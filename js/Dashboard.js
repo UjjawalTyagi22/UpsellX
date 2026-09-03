@@ -6,6 +6,7 @@ function buildQuery(params){ return Object.entries(params).filter(([k,v])=>v!==u
 function niceNow(){ return new Date().toLocaleString('en-IN',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit',hour12:true}); }
 function firstNameOf(name){ return (name||'User').split(' ')[0]; }
 function initialsFromName(name){ const parts=(name||'User').trim().split(/\s+/); if(parts.length===1) return parts[0].charAt(0).toUpperCase(); return (parts[0].charAt(0)+parts[1].charAt(0)).toUpperCase(); }
+
 /* NAYA — ab URL params pe bharosa nahi karte. Seedha backend se
    poochte hain "yeh JWT cookie kiska hai" — yehi asli, reliable
    tarika hai kyunki cookie hamesha browser mein maujood hai,
@@ -168,9 +169,17 @@ function renderCustomerList(seg){
   wrap.innerHTML = list.map((r, index) => {
     const seg = segOf(r.recommendation);
     const badgeLabel = seg==='up' ? 'High Upsell' : seg==='risk' ? 'Retain First' : 'Low Priority';
-    const scorePct = Math.round((r.churn_score || 0) * 100);
+    const scorePct = Math.round((r.churn_probability || 0) * 100);
     const idText = String(r.customer_id);
     const rowNumber = index + 1; // Generates 1, 2, 3, 4...
+
+    /* NAYA — sirf High Upsell / Retain First customers ke liye
+       "Generate" button dikhega. Low Priority walon ke liye
+       koi recommendation hi nahi hoti, isliye button ka koi
+       matlab nahi. */
+    const messageBtn = seg !== 'low'
+      ? `<button class="link-btn cgen-btn" id="genbtn-${escapeHtml(idText)}" onclick="generateMessage('${escapeHtml(idText)}')">Generate</button>`
+      : `<span class="cgen-empty">—</span>`;
 
     return `<div class="custrow">
       <div class="cbar" style="background:${segColor(seg)}"></div>
@@ -178,6 +187,7 @@ function renderCustomerList(seg){
       <div class="cinfo"><div class="cname">${escapeHtml(idText)}</div><div class="cplan">${escapeHtml(planTextOf(r))}</div></div>
       <span class="cbadge ${seg}">${badgeLabel}</span>
       <div class="cscore"><div class="cscore-val" style="color:${segColor(seg)}">${scorePct}%</div><div class="cscore-lbl">churn risk</div></div>
+      ${messageBtn}
     </div>`;
   }).join('');
 }
@@ -199,7 +209,7 @@ function exportCSV(){
       label,
       plan ? plan.plan_name : '-',
       plan ? plan.price : '-',
-      Math.round((r.churn_score || 0) * 100),
+      Math.round((r.churn_probability || 0) * 100),
       (r.recommendation && r.recommendation.reason) || ''
     ]);
   });
@@ -218,6 +228,76 @@ async function uploadAnother(){
   await currentUser(); // just to keep session alive / confirm login
   location.href='upload.html';
 }
+
+/* =========================================================
+   GENERATE MESSAGE  (NAYA — GenAI outreach message feature)
+========================================================= */
+
+async function generateMessage(customerId){
+  const all = window.CUSTOMER_RESULTS || [];
+  const record = all.find(r => String(r.customer_id) === String(customerId));
+  if(!record) return;
+
+  const btn = document.getElementById('genbtn-' + customerId);
+  if(btn){ btn.textContent = 'Generating...'; btn.disabled = true; }
+
+  try{
+    const plan = record.recommendation.plan;
+
+    const res = await fetch('http://127.0.0.1:8000/api/generate-message', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      credentials: 'include',
+      body: JSON.stringify({
+        customer_id: String(record.customer_id),
+        recommendation_type: record.recommendation.recommendation_type,
+        plan_name: plan ? plan.plan_name : null,
+        plan_benefit: plan ? plan.benefit : null,
+        reason: record.recommendation.reason,
+        churn_probability: record.churn_probability
+      })
+    });
+
+    const data = await res.json();
+
+    if(!res.ok){
+      throw new Error((data && data.detail) || 'Message generation failed.');
+    }
+
+    showMessageModal(record.customer_id, data.message, null);
+
+  } catch(err){
+    showMessageModal(record.customer_id, null, err.message);
+  } finally {
+    if(btn){ btn.textContent = 'Generate'; btn.disabled = false; }
+  }
+}
+
+function showMessageModal(customerId, message, errorMsg){
+  $('modalTitle').textContent = `Outreach message :  ${customerId}`;
+
+  if(errorMsg){
+    $('modalBody').innerHTML = `<p style="color:var(--risk);">Couldn't generate a message: ${escapeHtml(errorMsg)}</p>`;
+  } else {
+    $('modalBody').innerHTML = `<p>${escapeHtml(message)}</p>`;
+  }
+
+  $('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(){
+  $('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleOverlayClick(e){
+  if(e.target.id === 'modalOverlay') closeModal();
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') closeModal();
+});
 
 /* ---------- page init ---------- */
 /* renderNav ab async hai, isliye ek chhota init function bana ke chalate hain */

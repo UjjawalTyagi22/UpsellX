@@ -1846,9 +1846,10 @@ input::placeholder {
 }
 
 .custrow {
-  display:flex;
+  display:grid;
+  grid-template-columns:3px 34px 1fr 118px 64px 92px;
   align-items:center;
-  gap:11px;
+  gap:14px;
   background:rgba(0,0,0,.02);
   border:1px solid var(--border);
   border-radius:10px;
@@ -1876,7 +1877,6 @@ input::placeholder {
 }
 
 .cinfo {
-  flex:1;
   min-width:0
 }
 
@@ -1895,7 +1895,7 @@ input::placeholder {
 
 .cscore {
   text-align:right;
-  min-width:56px
+  min-width:0
 }
 
 .cscore-val {
@@ -1916,7 +1916,8 @@ input::placeholder {
   letter-spacing:.03em;
   padding:4px 10px;
   border-radius:20px;
-  white-space:nowrap
+  white-space:nowrap;
+  justify-self:center
 }
 
 .cbadge.up {
@@ -1932,6 +1933,34 @@ input::placeholder {
 .cbadge.low {
   background:#eceff2;
   color:var(--faint)
+}
+
+.cgen-btn {
+  justify-self:end;
+  background:none;
+  border:none;
+  color:var(--purple);
+  font-size:.8rem;
+  font-weight:700;
+  cursor:pointer;
+  padding:0;
+  white-space:nowrap
+}
+
+.cgen-btn:hover {
+  text-decoration:underline
+}
+
+.cgen-btn:disabled {
+  opacity:.5;
+  cursor:not-allowed;
+  text-decoration:none
+}
+
+.cgen-empty {
+  justify-self:end;
+  color:var(--faint);
+  font-size:.85rem
 }
 
 .empty-note {
@@ -2131,12 +2160,22 @@ input::placeholder {
   }
 
   .custrow {
+    grid-template-columns:3px 30px 1fr 88px 50px 74px;
     gap:8px;
     padding:9px 10px
   }
 
+  .cbadge {
+    font-size:.6rem;
+    padding:3px 7px
+  }
+
+  .cgen-btn {
+    font-size:.72rem
+  }
+
   .cscore {
-    min-width:44px
+    min-width:0
   }
 
   .cplan {
